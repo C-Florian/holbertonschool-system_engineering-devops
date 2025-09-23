@@ -1,0 +1,16 @@
+Title: Scale Up (add 1 server, LB cluster, split tiers)
+
+ASCII diagram:
+[DNS (health-checked)] -> [HAProxy #1]---[HAProxy #2]
+           \-> [Web tier] -> [App tier] -> [DB Primary] & [DB Replicas]
+Web -> [CDN for static]; App -> [Redis/Memcached cache]
+
+Added & why:
+- +1 server and LB cluster (active-active): remove LB SPOF; DNS/VIP failover
+- Split components to dedicated servers (Web, App, DB): independent scaling/tuning
+- Cache (Redis/Memcached) & CDN: offload DB/app; lower latency, better throughput
+
+Notes:
+- Scale up vs Scale out: bigger machine vs more machines (prefer scale out)
+- DB: writes to Primary; reads from Replicas; promote Replica on failure
+- Keep Web/App stateless (sessions in Redis/JWT) for autoscaling

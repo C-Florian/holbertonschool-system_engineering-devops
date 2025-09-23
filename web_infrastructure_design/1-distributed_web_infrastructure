@@ -1,0 +1,23 @@
+Title: Distributed Web Infrastructure (3 servers with HAProxy)
+Goal: www.foobar.com behind a load balancer, 2 web/app servers, 1 DB.
+
+ASCII diagram:
+[User] -> [DNS] -> [HAProxy LB] -> [Web+App #1] -> [MySQL]
+                                  \-> [Web+App #2] -> [MySQL]
+
+Added & why:
+- Load Balancer (HAProxy): spreads requests, improves availability/throughput
+- Two Web+App servers: remove app-tier SPOF, enable horizontal scaling
+- Dedicated DB server: separate concerns, tuning/backups
+
+LB algorithm (example: Round Robin): cycles through backends in order
+Active-Active vs Active-Passive: AA = both serve; AP = one serves, one standby
+
+DB Primary-Replica:
+- Primary handles writes; replicas receive async replication; reads can go to replicas
+App view: Primary = read/write; Replica = read-only
+
+Issues remaining:
+- SPOF: single DB primary; single LB
+- Security: no firewalls, no HTTPS
+- Observability: no monitoring/logging

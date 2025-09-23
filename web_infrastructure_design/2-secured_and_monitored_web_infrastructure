@@ -1,0 +1,27 @@
+Title: Secured & Monitored Web Infrastructure (TLS + Firewalls + Monitoring)
+
+ASCII diagram:
+[User] -> [DNS] -> [LB (TLS)] -> [Web+App #1] -> [MySQL Primary]
+                         |              \-> [Monitoring Agent]
+                         -> [Web+App #2] -> [MySQL Primary]
+                                        \-> [Monitoring Agent]
+[Firewall #1: Internet->LB 80/443]
+[Firewall #2: LB->Web/App internal HTTP/health]
+[Firewall #3: Web/App->DB 3306 only]
+[Monitoring backend (Sumo/Datadog/ELK/CloudWatch)] <- agents
+
+Added & why:
+- 3 Firewalls: least privilege, reduced attack surface
+- SSL certificate: HTTPS (encryption, integrity, server auth)
+- Monitoring agents: collect CPU, RAM, QPS, latency, 5xx, logs
+
+What are firewalls for? Filter traffic by IP/port/protocol
+Why HTTPS? Confidentiality, integrity, authentication
+What is monitoring for? Visibility, alerting, capacity planning, troubleshooting
+How is data collected? Agents push/scrape metrics/logs at intervals
+Monitor web QPS? Enable Nginx stub_status or app metrics; dashboard + alert
+
+Issues to highlight:
+- TLS only at LB: backend LB->Web/App plaintext unless internal TLS
+- Single writable MySQL: write SPOF; need failover/promotion
+- Same components on each host: larger blast radius; resource contention

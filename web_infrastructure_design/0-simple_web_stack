@@ -1,0 +1,26 @@
+Title: Simple Web Stack (one server, LAMP-like with Nginx)
+URL: www.foobar.com (DNS: foobar.com with a "www" A record -> 8.8.8.8)
+
+ASCII diagram:
+[User] -> Internet -> [Server 8.8.8.8] -> [Nginx -> App Server -> Code] -> [MySQL]
+
+Request path:
+1) User -> https://www.foobar.com
+2) DNS resolves www.foobar.com -> 8.8.8.8 (A record)
+3) Browser opens TCP (HTTP/HTTPS) to 8.8.8.8
+4) Nginx serves static / proxies dynamic to App Server
+5) App executes code, queries MySQL, returns response
+
+Explain:
+- Server: machine providing services over a network
+- Domain name: human-friendly name resolved by DNS to an IP
+- DNS record for 'www': A (IPv4) or AAAA (IPv6)
+- Web server (Nginx): HTTP(S) termination, static files, reverse proxy
+- Application server: runs business logic, handles requests, talks to DB
+- Database (MySQL): persistent storage (SQL/ACID)
+- Protocol: HTTP/HTTPS over TCP/IP (TLS for HTTPS)
+
+Issues:
+- SPOF: single server (failure = outage)
+- Maintenance downtime: restarts interrupt service
+- No scale: limited by one box; no horizontal scaling
