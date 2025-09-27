@@ -22,6 +22,10 @@ flowchart LR
   W1 --> MON["Monitoring Agent"]
   W2 --> MON
   DB1 --> MON
+```
+
+![Diagram](assets/2-secured_and_monitored_web_infrastructure.png)
+
 
 ## Notes
 - HTTPS prevents eavesdropping.

@@ -16,8 +16,12 @@ flowchart LR
   D --> LB["HAProxy Load Balancer"]
   LB --> W1["Web+App Server #1"]
   LB --> W2["Web+App Server #2"]
-  W1 --> DB[(MySQL)]
+  W1 --> DB[(MySQL Database)]
   W2 --> DB
+```
+
+![Diagram](assets/1-distributed_web_infrastructure.png)
+
 
 ## Notes
 - **Load balancing** improves availability and scaling.
