@@ -15,31 +15,25 @@ This setup scales the system by splitting tiers and clustering components.
 ```mermaid
 flowchart LR
   U["User"] --> D["DNS (www.foobar.com)"]
-  D --> LB1["HAProxy Load Balancer #1 (cluster)"]
-  D --> LB2["HAProxy Load Balancer #2 (cluster)"]
-
+  D --> LB1["HAProxy LB #1 (cluster)"]
+  D --> LB2["HAProxy LB #2 (cluster)"]
   LB1 --> W1["Web Server #1"]
   LB1 --> W2["Web Server #2"]
   LB2 --> W3["Web Server #3"]
   LB2 --> W4["Web Server #4"]
-
   W1 --> APP1["App Server #1"]
   W2 --> APP2["App Server #2"]
   W3 --> APP3["App Server #3"]
   W4 --> APP4["App Server #4"]
-
   APP1 --> CACHE["Redis/Memcached Cache"]
   APP2 --> CACHE
   APP3 --> CACHE
   APP4 --> CACHE
-
   CACHE --> DBP["MySQL Primary"]
   DBP --> DBR1["MySQL Replica #1"]
   DBP --> DBR2["MySQL Replica #2"]
-
   U --> CDN["CDN"]
   CDN --> D
-```
 
 ## Notes
 - **No SPOF**: multiple load balancers and DB replicas.

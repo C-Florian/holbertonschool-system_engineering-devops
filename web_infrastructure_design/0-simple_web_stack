@@ -13,13 +13,12 @@ This is the simplest setup for hosting **www.foobar.com** on a single server.
 
 ```mermaid
 flowchart LR
-  A["User"] --> B["DNS"]
-  B --> C["Internet"]
-  C --> D["Server 8.8.8.8"]
-  D --> E["Nginx"]
-  E --> F["App Server"]
-  F --> G[(MySQL)]
-```
+  U["User"] --> D["DNS (www.foobar.com)"]
+  D --> I["Internet"]
+  I --> S["Server 8.8.8.8"]
+  S --> WS["Nginx"]
+  WS --> AS["App Server"]
+  AS --> DB[(MySQL)]
 
 ## Issues
 - Single Point of Failure (SPOF): if the server goes down, the site is unavailable.

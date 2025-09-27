@@ -14,18 +14,14 @@ This setup adds HTTPS, firewalls, and monitoring.
 flowchart LR
   U["User"] --> D["DNS (www.foobar.com)"]
   D --> LB["HAProxy Load Balancer (HTTPS)"]
-  LB --> FW1["Firewall #1"]
   LB --> W1["Web+App Server #1"]
   LB --> W2["Web+App Server #2"]
-  W1 --> FW2["Firewall #2"]
-  W2 --> FW2
-  FW2 --> DB1["MySQL Primary"]
-  DB1 --> FW3["Firewall #3"]
-  FW3 --> DB2["MySQL Replica"]
+  W1 --> DB1["MySQL Primary"]
+  W2 --> DB1
+  DB1 --> DB2["MySQL Replica"]
   W1 --> MON["Monitoring Agent"]
   W2 --> MON
   DB1 --> MON
-```
 
 ## Notes
 - HTTPS prevents eavesdropping.
