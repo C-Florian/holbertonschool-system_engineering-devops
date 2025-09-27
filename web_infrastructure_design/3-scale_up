@@ -42,7 +42,7 @@ flowchart LR
   CDN --> D
 ```
 
-![Diagram](assets/3-scale_up.png)
+![Diagram](./assets/3-scale_up.png)
 
 
 ## Notes
