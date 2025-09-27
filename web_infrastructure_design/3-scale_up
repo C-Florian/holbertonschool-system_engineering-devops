@@ -41,7 +41,6 @@ flowchart LR
   U --> CDN["CDN"]
   CDN --> D
 ```
-![Diagram](assets/3-scale_up.png)
 
 ## Notes
 - **No SPOF**: multiple load balancers and DB replicas.

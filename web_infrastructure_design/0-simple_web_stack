@@ -21,8 +21,6 @@ flowchart LR
   AS --> DB[(MySQL)]
 ```
 
-![Diagram](assets/0-simple_web_stack.png)
-
 ## Issues
 - Single Point of Failure (SPOF): if the server goes down, the site is unavailable.
 - Downtime needed for maintenance.
