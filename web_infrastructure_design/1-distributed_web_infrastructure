@@ -1,23 +1,26 @@
-Title: Distributed Web Infrastructure (3 servers with HAProxy)
-Goal: www.foobar.com behind a load balancer, 2 web/app servers, 1 DB.
+# 1. Distributed Web Infrastructure
 
-ASCII diagram:
-[User] -> [DNS] -> [HAProxy LB] -> [Web+App #1] -> [MySQL]
-                                  \-> [Web+App #2] -> [MySQL]
+This setup adds load balancing and separates the database server.
 
-Added & why:
-- Load Balancer (HAProxy): spreads requests, improves availability/throughput
-- Two Web+App servers: remove app-tier SPOF, enable horizontal scaling
-- Dedicated DB server: separate concerns, tuning/backups
+## Components
+- **DNS**: still maps `www.foobar.com` to the load balancer IP.
+- **Load Balancer (HAProxy)**: distributes requests between 2 servers.
+- **2 Web+App Servers**: serve dynamic content and execute app logic.
+- **1 Database Server**: stores persistent data.
 
-LB algorithm (example: Round Robin): cycles through backends in order
-Active-Active vs Active-Passive: AA = both serve; AP = one serves, one standby
+## Diagram
 
-DB Primary-Replica:
-- Primary handles writes; replicas receive async replication; reads can go to replicas
-App view: Primary = read/write; Replica = read-only
+```mermaid
+flowchart LR
+  U["User"] --> D["DNS (www.foobar.com)"]
+  D --> LB["HAProxy Load Balancer"]
+  LB --> W1["Web+App Server #1"]
+  LB --> W2["Web+App Server #2"]
+  W1 --> DB[(MySQL Database)]
+  W2 --> DB
+```
 
-Issues remaining:
-- SPOF: single DB primary; single LB
-- Security: no firewalls, no HTTPS
-- Observability: no monitoring/logging
+## Notes
+- **Load balancing** improves availability and scaling.
+- **DB server** is separated but still a SPOF.
+- No SSL, no monitoring yet.

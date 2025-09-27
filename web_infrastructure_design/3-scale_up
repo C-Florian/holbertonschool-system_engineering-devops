@@ -1,16 +1,47 @@
-Title: Scale Up (add 1 server, LB cluster, split tiers)
+# 3. Scale Up
 
-ASCII diagram:
-[DNS (health-checked)] -> [HAProxy #1]---[HAProxy #2]
-           \-> [Web tier] -> [App tier] -> [DB Primary] & [DB Replicas]
-Web -> [CDN for static]; App -> [Redis/Memcached cache]
+This setup scales the system by splitting tiers and clustering components.
 
-Added & why:
-- +1 server and LB cluster (active-active): remove LB SPOF; DNS/VIP failover
-- Split components to dedicated servers (Web, App, DB): independent scaling/tuning
-- Cache (Redis/Memcached) & CDN: offload DB/app; lower latency, better throughput
+## Components
+- **2 Load Balancers (HAProxy, active-active)** for redundancy.
+- **Dedicated Web Servers**: handle static content.
+- **Dedicated App Servers**: execute dynamic logic.
+- **Database Cluster**: multiple primary/replica nodes.
+- **Cache (Redis/Memcached)**: reduces DB load.
+- **CDN**: speeds up static content delivery.
 
-Notes:
-- Scale up vs Scale out: bigger machine vs more machines (prefer scale out)
-- DB: writes to Primary; reads from Replicas; promote Replica on failure
-- Keep Web/App stateless (sessions in Redis/JWT) for autoscaling
+## Diagram
+
+```mermaid
+flowchart LR
+  U["User"] --> D["DNS (www.foobar.com)"]
+  D --> LB1["HAProxy Load Balancer #1 (cluster)"]
+  D --> LB2["HAProxy Load Balancer #2 (cluster)"]
+
+  LB1 --> W1["Web Server #1"]
+  LB1 --> W2["Web Server #2"]
+  LB2 --> W3["Web Server #3"]
+  LB2 --> W4["Web Server #4"]
+
+  W1 --> APP1["App Server #1"]
+  W2 --> APP2["App Server #2"]
+  W3 --> APP3["App Server #3"]
+  W4 --> APP4["App Server #4"]
+
+  APP1 --> CACHE["Redis/Memcached Cache"]
+  APP2 --> CACHE
+  APP3 --> CACHE
+  APP4 --> CACHE
+
+  CACHE --> DBP["MySQL Primary"]
+  DBP --> DBR1["MySQL Replica #1"]
+  DBP --> DBR2["MySQL Replica #2"]
+
+  U --> CDN["CDN"]
+  CDN --> D
+```
+
+## Notes
+- **No SPOF**: multiple load balancers and DB replicas.
+- **Horizontal scaling** at every tier.
+- **Cache + CDN** improve performance.

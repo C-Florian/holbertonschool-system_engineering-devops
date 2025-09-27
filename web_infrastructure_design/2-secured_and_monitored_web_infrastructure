@@ -1,27 +1,34 @@
-Title: Secured & Monitored Web Infrastructure (TLS + Firewalls + Monitoring)
+# 2. Secured and Monitored Web Infrastructure
 
-ASCII diagram:
-[User] -> [DNS] -> [LB (TLS)] -> [Web+App #1] -> [MySQL Primary]
-                         |              \-> [Monitoring Agent]
-                         -> [Web+App #2] -> [MySQL Primary]
-                                        \-> [Monitoring Agent]
-[Firewall #1: Internet->LB 80/443]
-[Firewall #2: LB->Web/App internal HTTP/health]
-[Firewall #3: Web/App->DB 3306 only]
-[Monitoring backend (Sumo/Datadog/ELK/CloudWatch)] <- agents
+This setup adds HTTPS, firewalls, and monitoring.
 
-Added & why:
-- 3 Firewalls: least privilege, reduced attack surface
-- SSL certificate: HTTPS (encryption, integrity, server auth)
-- Monitoring agents: collect CPU, RAM, QPS, latency, 5xx, logs
+## Components
+- **SSL (HTTPS)**: secure communication between users and servers.
+- **Firewalls**: filter traffic, only allow necessary ports (e.g. 80, 443, 3306).
+- **Monitoring**: agents collect metrics (QPS, errors, CPU, etc.).
+- **DB Replication**: primary + replica for redundancy.
 
-What are firewalls for? Filter traffic by IP/port/protocol
-Why HTTPS? Confidentiality, integrity, authentication
-What is monitoring for? Visibility, alerting, capacity planning, troubleshooting
-How is data collected? Agents push/scrape metrics/logs at intervals
-Monitor web QPS? Enable Nginx stub_status or app metrics; dashboard + alert
+## Diagram
 
-Issues to highlight:
-- TLS only at LB: backend LB->Web/App plaintext unless internal TLS
-- Single writable MySQL: write SPOF; need failover/promotion
-- Same components on each host: larger blast radius; resource contention
+```mermaid
+flowchart LR
+  U["User"] --> D["DNS (www.foobar.com)"]
+  D --> LB["HAProxy Load Balancer (HTTPS)"]
+  LB --> FW1["Firewall #1"]
+  LB --> W1["Web+App Server #1"]
+  LB --> W2["Web+App Server #2"]
+  W1 --> FW2["Firewall #2"]
+  W2 --> FW2
+  FW2 --> DB1["MySQL Primary"]
+  DB1 --> FW3["Firewall #3"]
+  FW3 --> DB2["MySQL Replica"]
+  W1 --> MON["Monitoring Agent"]
+  W2 --> MON
+  DB1 --> MON
+```
+
+## Notes
+- HTTPS prevents eavesdropping.
+- Firewalls enforce least-privilege rules.
+- Monitoring improves reliability by detecting failures.
+- Still one active DB (replica is read-only).

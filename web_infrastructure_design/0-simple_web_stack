@@ -1,26 +1,27 @@
-Title: Simple Web Stack (one server, LAMP-like with Nginx)
-URL: www.foobar.com (DNS: foobar.com with a "www" A record -> 8.8.8.8)
+# 0. Simple Web Stack
 
-ASCII diagram:
-[User] -> Internet -> [Server 8.8.8.8] -> [Nginx -> App Server -> Code] -> [MySQL]
+This is the simplest setup for hosting **www.foobar.com** on a single server.
 
-Request path:
-1) User -> https://www.foobar.com
-2) DNS resolves www.foobar.com -> 8.8.8.8 (A record)
-3) Browser opens TCP (HTTP/HTTPS) to 8.8.8.8
-4) Nginx serves static / proxies dynamic to App Server
-5) App executes code, queries MySQL, returns response
+## Components
+- **Server (8.8.8.8)**: runs everything (web, app, and DB).
+- **DNS**: maps `www.foobar.com` → `8.8.8.8`.
+- **Web Server (Nginx)**: handles HTTP requests from users.
+- **Application Server**: executes application logic.
+- **Database (MySQL)**: stores persistent data.
 
-Explain:
-- Server: machine providing services over a network
-- Domain name: human-friendly name resolved by DNS to an IP
-- DNS record for 'www': A (IPv4) or AAAA (IPv6)
-- Web server (Nginx): HTTP(S) termination, static files, reverse proxy
-- Application server: runs business logic, handles requests, talks to DB
-- Database (MySQL): persistent storage (SQL/ACID)
-- Protocol: HTTP/HTTPS over TCP/IP (TLS for HTTPS)
+## Diagram
 
-Issues:
-- SPOF: single server (failure = outage)
-- Maintenance downtime: restarts interrupt service
-- No scale: limited by one box; no horizontal scaling
+```mermaid
+flowchart LR
+  A["User"] --> B["DNS"]
+  B --> C["Internet"]
+  C --> D["Server 8.8.8.8"]
+  D --> E["Nginx"]
+  E --> F["App Server"]
+  F --> G[(MySQL)]
+```
+
+## Issues
+- Single Point of Failure (SPOF): if the server goes down, the site is unavailable.
+- Downtime needed for maintenance.
+- Limited scalability: only one machine handles everything.
